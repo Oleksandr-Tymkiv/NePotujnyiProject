@@ -3,6 +3,7 @@ package main
 import (
 	"foodapp/config"
 	"foodapp/database"
+	"foodapp/routes"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,7 +31,7 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	//routes.SetupRoutes(app)
+	routes.SetupRoutes(app)
 
 	log.Printf("Server starting on port %s", cf.ServerPort)
 	log.Fatal(app.Listen(":" + cf.ServerPort))

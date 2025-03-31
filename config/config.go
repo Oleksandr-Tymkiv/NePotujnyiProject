@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -23,7 +24,7 @@ type DatabaseConfig struct {
 func LoadConfig() (*Config, error) {
 	err := godotenv.Load()
 	if err != nil {
-		return nil, err
+		log.Println("Warning: .env file not found, using default values")
 	}
 
 	config := &Config{

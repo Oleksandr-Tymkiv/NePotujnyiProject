@@ -1,20 +1,19 @@
 package database
 
 import (
-	"fmt"
 	"foodapp/config"
+	"foodapp/models"
 	"log"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	_ "modernc.org/sqlite"
 )
 
 var DB *gorm.DB
 
 func Connect(config config.DatabaseConfig) error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		config.User, config.Password, config.Host, config.Port, config.DBName)
-
+	dsn := config.DBName + ".db" // SQLite використовує файл як БД
 	var err error
 	DB, err = gorm.Open(sqlite.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -40,12 +39,12 @@ func Close() {
 
 func MigrateDB() {
 	if err := DB.AutoMigrate(
-	//&models.User{},
-	//&models.Dish{},
-	//&models.Ingredient{},
-	//&models.DishIngredient{},
-	//&models.FavoriteDish{},
-	//&models.Cart{},
+		&models.User{},
+		//&models.Dish{},
+		//&models.Ingredient{},
+		//&models.DishIngredient{},
+		//&models.FavoriteDish{},
+		//&models.Cart{},
 	); err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
