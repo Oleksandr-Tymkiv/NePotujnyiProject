@@ -2,6 +2,7 @@ package routes
 
 import (
 	"foodapp/handlers"
+	"foodapp/middleware"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,8 +11,8 @@ func SetupRoutes(app *fiber.App) {
 	userRoutes.Post("/register", handlers.RegisterUser)
 	userRoutes.Post("/login", handlers.LoginUser)
 
-	//userRoutes.Get("/profile", middleware.AuthRequired(), handlers.GetUserProfile)
-	//userRoutes.Put("/profile/image", middleware.AuthRequired(), handlers.UpdateProfileImage)
+	userRoutes.Get("/profile", middleware.AuthRequired(), handlers.GetUserProfile)
+	userRoutes.Put("/profile/image", middleware.AuthRequired(), handlers.UpdateProfileImage)
 
 	//dishRoutes := app.Group("/dishes")
 	//dishRoutes.Get("/", handlers.GetAllDishes)

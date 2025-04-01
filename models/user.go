@@ -34,3 +34,7 @@ type LoginResponse struct {
 	Token string       `json:"token"`
 	User  UserResponse `json:"user"`
 }
+
+type ImageUpdateRequest struct {
+	Image []byte `json:"image,omitempty"`
+}
