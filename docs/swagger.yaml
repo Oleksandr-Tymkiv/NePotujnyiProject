@@ -341,7 +341,7 @@ paths:
       parameters:
       - description: Category name
         in: query
-        name: category
+        name: q
         required: true
         type: string
       produces:
@@ -376,7 +376,7 @@ paths:
       parameters:
       - description: Search query
         in: query
-        name: query
+        name: q
         required: true
         type: string
       produces:

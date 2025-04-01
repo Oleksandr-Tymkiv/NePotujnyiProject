@@ -64,13 +64,13 @@ func GetAllDishes(c *fiber.Ctx) error {
 // @Tags dishes
 // @Accept json
 // @Produce json
-// @Param category query string true "Category name"
+// @Param q query string true "Category name"
 // @Success 200 {array} models.DishWithIngredients
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
 // @Router /dishes/category [get]
 func GetDishesByCategory(c *fiber.Ctx) error {
-	category := c.Params("q")
+	category := c.Query("q")
 
 	if category == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
@@ -85,7 +85,7 @@ func GetDishesByCategory(c *fiber.Ctx) error {
 		})
 	}
 
-var dishesWithIngredients []models.DishWithIngredients
+	var dishesWithIngredients []models.DishWithIngredients
 	for _, dish := range dishes {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
@@ -122,7 +122,7 @@ var dishesWithIngredients []models.DishWithIngredients
 // @Tags dishes
 // @Accept json
 // @Produce json
-// @Param query query string true "Search query"
+// @Param q query string true "Search query"
 // @Success 200 {array} models.DishWithIngredients
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string

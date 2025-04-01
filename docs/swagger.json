@@ -265,7 +265,7 @@
                     {
                         "type": "string",
                         "description": "Category name",
-                        "name": "category",
+                        "name": "q",
                         "in": "query",
                         "required": true
                     }
@@ -318,7 +318,7 @@
                     {
                         "type": "string",
                         "description": "Search query",
-                        "name": "query",
+                        "name": "q",
                         "in": "query",
                         "required": true
                     }

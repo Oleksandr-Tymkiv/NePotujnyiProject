@@ -71,7 +71,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Tags dishes
 	// @Accept json
 	// @Produce json
-	// @Param category query string true "Category name"
+	// @Param q query string true "Category name"
 	// @Success 200 {array} models.Dish
 	// @Router /dishes/category [get]
 	dishRoutes.Get("/category", handlers.GetDishesByCategory)
@@ -81,7 +81,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Tags dishes
 	// @Accept json
 	// @Produce json
-	// @Param query query string true "Search query"
+	// @Param q query string true "Search query"
 	// @Success 200 {array} models.Dish
 	// @Router /dishes/search [get]
 	dishRoutes.Get("/search", handlers.SearchDishesByName)

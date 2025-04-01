@@ -267,7 +267,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Category name",
-                        "name": "category",
+                        "name": "q",
                         "in": "query",
                         "required": true
                     }
@@ -320,7 +320,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Search query",
-                        "name": "query",
+                        "name": "q",
                         "in": "query",
                         "required": true
                     }
