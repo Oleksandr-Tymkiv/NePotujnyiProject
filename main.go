@@ -6,11 +6,20 @@ import (
 	"foodapp/routes"
 	"log"
 
+	_ "foodapp/docs"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
+// @title Food App API
+// @version 1.0
+// @description This is the API documentation for the Food App
+// @host localhost:8080
+// @BasePath /
+// @schemes http https
 func main() {
 	cf, err := config.LoadConfig()
 	if err != nil {
@@ -25,11 +34,17 @@ func main() {
 	database.MigrateDB()
 
 	app := fiber.New(fiber.Config{
-		BodyLimit: 10 * 1024 * 1024,
+		BodyLimit: 10 * 2048 * 2048,
 	})
 
 	app.Use(logger.New())
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE",
+	}))
+
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	routes.SetupRoutes(app)
 

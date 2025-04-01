@@ -1,0 +1,23 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API documentation for the Food App
+  title: Food App API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Configures all API endpoints for the application
+      produces:
+      - application/json
+      responses: {}
+      summary: Setup all routes for the application
+      tags:
+      - routes
+schemes:
+- http
+- https
+swagger: "2.0"
