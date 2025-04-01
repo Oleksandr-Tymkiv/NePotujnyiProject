@@ -19,8 +19,8 @@ func SetupRoutes(app *fiber.App) {
 	// 	dishRoutes.Get("/category", handlers.GetDishesByCategory)
 	// 	dishRoutes.Get("/search", handlers.SearchDishesByName)
 
-	ingredientRoutes := app.Group("/ingredients")
-	ingredientRoutes.Post("/add", middleware.AuthRequired(), handlers.AddIngredient)
+	// 	ingredientRoutes := app.Group("/ingredients")
+	// 	ingredientRoutes.Post("/add", middleware.AuthRequired(), handlers.AddIngredient)
 
 	// 	dishIngredientsRoutes := app.Group("/dishes-ingredients")
 	// 	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
