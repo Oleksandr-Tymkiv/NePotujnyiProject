@@ -7,7 +7,6 @@ import (
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
-	_ "modernc.org/sqlite"
 )
 
 var DB *gorm.DB
@@ -38,12 +37,12 @@ func Close() {
 
 func MigrateDB() {
 	if err := DB.AutoMigrate(
-	&models.User{},
-	&models.Dish{},
-	&models.Ingredient{},
-	&models.DishIngredient{},
-	&models.FavoriteDish{},
-	&models.Cart{},
+		&models.User{},
+		&models.Dish{},
+		&models.Ingredient{},
+		&models.DishIngredient{},
+		&models.FavoriteDish{},
+		&models.Cart{},
 	); err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}

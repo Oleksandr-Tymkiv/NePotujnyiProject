@@ -3,26 +3,27 @@ package utils
 import (
 	"time"
 
+	cf "foodapp/config"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte("your-super-secret-key") // Краще зберігати в ENV
+var jwtSecret = cf.GetJwtSecret() // უმჯობესია შეინახოთ ENV-ში
 
 func GenerateJWT(id uint, email string) (string, error) {
-	// Створюємо claims (дані, які будуть в токені)
+	// პრეტენზიების შექმნა (მონაცემები, რომლებიც იქნება ჟეტონში)
 	claims := jwt.MapClaims{
 		"id":    id,
 		"email": email,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(), // Токен діє 24 години
+		"exp":   time.Now().Add(time.Hour * 24).Unix(), // ჟეტონი მოქმედებს 24 საათის განმავლობაში
 	}
 
-	// Генеруємо токен
+	// ჟეტონის გენერირება
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	// Підписуємо токен
-	signedToken, err := token.SignedString(jwtSecret)
+	// ვაწერთ ხელს ჟეტონს
+	signedToken, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return "ეს სისულელეა, გადააკეთე", err
 	}
 
 	return signedToken, nil
