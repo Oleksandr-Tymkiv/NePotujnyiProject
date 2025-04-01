@@ -9,6 +9,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary Get all dishes
+// @Description Get a list of all available dishes with their ingredients
+// @Tags dishes
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.DishWithIngredients
+// @Failure 500 {object} map[string]string
+// @Router /dishes [get]
 func GetAllDishes(c *fiber.Ctx) error {
 	var dishes []models.Dish
 	if result := database.DB.Find(&dishes); result.Error != nil {
@@ -51,6 +59,16 @@ func GetAllDishes(c *fiber.Ctx) error {
 	return c.Status(http.StatusOK).JSON(dishesWithIngredients)
 }
 
+// @Summary Get dishes by category
+// @Description Get dishes filtered by category
+// @Tags dishes
+// @Accept json
+// @Produce json
+// @Param category query string true "Category name"
+// @Success 200 {array} models.DishWithIngredients
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dishes/category [get]
 func GetDishesByCategory(c *fiber.Ctx) error {
 	category := c.Params("q")
 
@@ -99,6 +117,16 @@ var dishesWithIngredients []models.DishWithIngredients
 	return c.Status(fiber.StatusOK).JSON(dishesWithIngredients)
 }
 
+// @Summary Search dishes by name
+// @Description Search for dishes by name
+// @Tags dishes
+// @Accept json
+// @Produce json
+// @Param query query string true "Search query"
+// @Success 200 {array} models.DishWithIngredients
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dishes/search [get]
 func SearchDishesByName(c *fiber.Ctx) error {
 	searchQuery := c.Query("q")
 	if searchQuery == "" {

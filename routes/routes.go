@@ -87,10 +87,17 @@ func SetupRoutes(app *fiber.App) {
 	dishRoutes.Get("/search", handlers.SearchDishesByName)
 
 	ingredientRoutes := app.Group("/ingredients")
+	
+	// @Summary Add new ingredient
+	// @Description Add a new ingredient to the system
+	// @Tags ingredients
+	// @Accept json
+	// @Produce json
+	// @Security ApiKeyAuth
+	// @Param ingredient body models.Ingredient true "Ingredient details"
+	// @Success 200 {object} models.Ingredient
+	// @Router /ingredients/add [post]
 	ingredientRoutes.Post("/add", middleware.AuthRequired(), handlers.AddIngredient)
-
-	// 	dishIngredientsRoutes := app.Group("/dishes-ingredients")
-	// 	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
 
 	// @Summary Add favorite dish
 	// @Description Add a dish to user's favorites
@@ -125,7 +132,37 @@ func SetupRoutes(app *fiber.App) {
 	// @Router /favorites-dishes/get [get]
 	favoritesRoutes.Get("/get", handlers.GetUserFavoriteDishes)
 
+	dishIngredientsRoutes := app.Group("/dishes-ingredients")
+	// @Summary Get dish ingredients
+	// @Description Get all ingredients for a specific dish
+	// @Tags dishes-ingredients
+	// @Accept json
+	// @Produce json
+	// @Param dish_id path int true "Dish ID"
+	// @Success 200 {array} models.Ingredient
+	// @Router /dishes-ingredients/{dish_id} [get]
+	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
+
 	cartRoutes := app.Group("/cart")
+	
+	// @Summary Add ingredients to cart
+	// @Description Add ingredients to user's shopping cart
+	// @Tags cart
+	// @Accept json
+	// @Produce json
+	// @Security ApiKeyAuth
+	// @Param ingredients body []models.CartIngredient true "List of ingredients to add"
+	// @Success 200 {object} models.Cart
+	// @Router /cart/add-ingredients [post]
 	cartRoutes.Post("/add-ingredients", middleware.AuthRequired(), handlers.AddIngredientsToCart)
+
+	// @Summary Get user's cart
+	// @Description Get all ingredients in user's shopping cart
+	// @Tags cart
+	// @Accept json
+	// @Produce json
+	// @Security ApiKeyAuth
+	// @Success 200 {object} models.Cart
+	// @Router /cart/get [get]
 	cartRoutes.Get("/get", middleware.AuthRequired(), handlers.GetUserCart)
 }

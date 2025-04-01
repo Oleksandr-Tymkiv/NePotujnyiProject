@@ -1,4 +1,178 @@
 basePath: /
+definitions:
+  models.CartRequest:
+    properties:
+      ingredient_id:
+        type: integer
+      quantity:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - ingredient_id
+    - quantity
+    type: object
+  models.CartResponse:
+    properties:
+      id:
+        type: integer
+      ingredient:
+        properties:
+          id:
+            type: integer
+          image:
+            type: string
+          name:
+            type: string
+        type: object
+      quantity:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Dish:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: number
+      category:
+        type: string
+      created_at:
+        type: string
+      fats:
+        type: number
+      id:
+        type: integer
+      image:
+        type: string
+      instruction:
+        type: string
+      name:
+        type: string
+      preparation_time:
+        type: integer
+      proteins:
+        type: number
+      user_id:
+        type: integer
+      video_instructions:
+        items:
+          type: integer
+        type: array
+    type: object
+  models.DishIngredientResponse:
+    properties:
+      dish_id:
+        type: integer
+      ingredient:
+        $ref: '#/definitions/models.IngredientResponse'
+      quantity:
+        type: number
+    type: object
+  models.DishWithIngredients:
+    properties:
+      dish:
+        $ref: '#/definitions/models.Dish'
+      ingredients:
+        items:
+          $ref: '#/definitions/models.IngredientDetails'
+        type: array
+    type: object
+  models.FavoriteDishRequest:
+    properties:
+      dish_id:
+        type: integer
+      user_id:
+        type: integer
+    required:
+    - dish_id
+    type: object
+  models.ImageUpdateRequest:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+    type: object
+  models.IngredientDetails:
+    properties:
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+      quantity:
+        type: number
+    type: object
+  models.IngredientRequest:
+    properties:
+      image:
+        items:
+          type: integer
+        type: array
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.IngredientResponse:
+    properties:
+      id:
+        type: integer
+      image:
+        type: string
+      name:
+        type: string
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.LoginResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.UserResponse'
+    type: object
+  models.RegisterRequest:
+    properties:
+      email:
+        type: string
+      image:
+        items:
+          type: integer
+        type: array
+      password:
+        minLength: 6
+        type: string
+      user_name:
+        type: string
+    required:
+    - email
+    - password
+    - user_name
+    type: object
+  models.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      profile_image:
+        description: Base64 დაშიფრულია
+        type: string
+      user_name:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -17,6 +191,517 @@ paths:
       summary: Setup all routes for the application
       tags:
       - routes
+  /cart/add-ingredients:
+    post:
+      consumes:
+      - application/json
+      description: Add ingredients to user's shopping cart
+      parameters:
+      - description: Cart request details
+        in: body
+        name: ingredients
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Add ingredients to cart
+      tags:
+      - cart
+  /cart/get:
+    get:
+      consumes:
+      - application/json
+      description: Get all ingredients in user's shopping cart
+      parameters:
+      - description: User email
+        in: query
+        name: email
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CartResponse'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get user's cart
+      tags:
+      - cart
+  /dishes:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all available dishes with their ingredients
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DishWithIngredients'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all dishes
+      tags:
+      - dishes
+  /dishes-ingredients/{dish_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all ingredients for a specific dish
+      parameters:
+      - description: Dish ID
+        in: path
+        name: dish_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DishIngredientResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get dish ingredients
+      tags:
+      - dishes-ingredients
+  /dishes/category:
+    get:
+      consumes:
+      - application/json
+      description: Get dishes filtered by category
+      parameters:
+      - description: Category name
+        in: query
+        name: category
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DishWithIngredients'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get dishes by category
+      tags:
+      - dishes
+  /dishes/search:
+    get:
+      consumes:
+      - application/json
+      description: Search for dishes by name
+      parameters:
+      - description: Search query
+        in: query
+        name: query
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.DishWithIngredients'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Search dishes by name
+      tags:
+      - dishes
+  /favorites-dishes/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a dish to user's favorites
+      parameters:
+      - description: Favorite dish request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FavoriteDishRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Add favorite dish
+      tags:
+      - favorites
+  /favorites-dishes/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a dish from user's favorites
+      parameters:
+      - description: Favorite dish request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.FavoriteDishRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Delete favorite dish
+      tags:
+      - favorites
+  /favorites-dishes/get:
+    get:
+      consumes:
+      - application/json
+      description: Get all favorite dishes for the current user
+      parameters:
+      - description: User email
+        in: query
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                $ref: '#/definitions/models.DishWithIngredients'
+              type: array
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get user's favorite dishes
+      tags:
+      - favorites
+  /ingredients/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new ingredient to the system
+      parameters:
+      - description: Ingredient details
+        in: body
+        name: ingredient
+        required: true
+        schema:
+          $ref: '#/definitions/models.IngredientRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Add new ingredient
+      tags:
+      - ingredients
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user and get JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Login user
+      tags:
+      - users
+  /users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get the current user's profile information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserResponse'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get user profile
+      tags:
+      - users
+  /users/profile/image:
+    put:
+      consumes:
+      - application/json
+      description: Update the current user's profile image
+      parameters:
+      - description: Profile image data
+        in: body
+        name: image
+        required: true
+        schema:
+          $ref: '#/definitions/models.ImageUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Update profile image
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the provided details
+      parameters:
+      - description: User registration details
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - users
 schemes:
 - http
 - https

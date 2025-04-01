@@ -9,6 +9,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// @Summary Add favorite dish
+// @Description Add a dish to user's favorites
+// @Tags favorites
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body models.FavoriteDishRequest true "Favorite dish request"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 409 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /favorites-dishes/add [post]
 func AddFavoriteDish(c *fiber.Ctx) error {
 	var req models.FavoriteDishRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -42,6 +54,17 @@ func AddFavoriteDish(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Delete favorite dish
+// @Description Remove a dish from user's favorites
+// @Tags favorites
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param request body models.FavoriteDishRequest true "Favorite dish request"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /favorites-dishes/delete [delete]
 func DeleteFavoriteDish(c *fiber.Ctx) error {
 	var req models.FavoriteDishRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -62,6 +85,17 @@ func DeleteFavoriteDish(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Get user's favorite dishes
+// @Description Get all favorite dishes for the current user
+// @Tags favorites
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param email query string true "User email"
+// @Success 200 {object} map[string][]models.DishWithIngredients
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /favorites-dishes/get [get]
 func GetUserFavoriteDishes(c *fiber.Ctx) error {
 	email := c.Query("email")
 	if email == "" {

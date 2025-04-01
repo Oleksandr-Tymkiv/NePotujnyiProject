@@ -8,7 +8,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// AddIngredientToCart adds an ingredient to user's cart
+// @Summary Add ingredients to cart
+// @Description Add ingredients to user's shopping cart
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param ingredients body models.CartRequest true "Cart request details"
+// @Success 201 {object} map[string]interface{}
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /cart/add-ingredients [post]
 func AddIngredientsToCart(c *fiber.Ctx) error {
 	var req models.CartRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -59,7 +70,17 @@ func AddIngredientsToCart(c *fiber.Ctx) error {
 	})
 }
 
-// GetUserCart gets all ingredients in user's cart
+// @Summary Get user's cart
+// @Description Get all ingredients in user's shopping cart
+// @Tags cart
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param email query string false "User email"
+// @Success 200 {array} models.CartResponse
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /cart/get [get]
 func GetUserCart(c *fiber.Ctx) error {
 	email := c.Query("q")
 	var userID uint

@@ -10,6 +10,17 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// @Summary Register a new user
+// @Description Register a new user with the provided details
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body models.RegisterRequest true "User registration details"
+// @Success 201 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string
+// @Failure 409 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users/register [post]
 func RegisterUser(c *fiber.Ctx) error {
 	var req models.RegisterRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -51,6 +62,17 @@ func RegisterUser(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Login user
+// @Description Login user and get JWT token
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param credentials body models.LoginRequest true "Login credentials"
+// @Success 200 {object} models.LoginResponse
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users/login [post]
 func LoginUser(c *fiber.Ctx) error {
 	var req models.LoginRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -95,6 +117,15 @@ func LoginUser(c *fiber.Ctx) error {
 	})
 }
 
+// @Summary Get user profile
+// @Description Get the current user's profile information
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} models.UserResponse
+// @Failure 404 {object} map[string]string
+// @Router /users/profile [get]
 func GetUserProfile(c *fiber.Ctx) error {
 	userID := c.Locals("userID").(uint)
 
@@ -118,6 +149,17 @@ func GetUserProfile(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(userResponse)
 }
 
+// @Summary Update profile image
+// @Description Update the current user's profile image
+// @Tags users
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param image body models.ImageUpdateRequest true "Profile image data"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /users/profile/image [put]
 func UpdateProfileImage(c *fiber.Ctx) error {
 	var req models.ImageUpdateRequest
 	if err := c.BodyParser(&req); err != nil {
