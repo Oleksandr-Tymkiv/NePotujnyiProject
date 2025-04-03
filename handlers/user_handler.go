@@ -180,3 +180,16 @@ func UpdateProfileImage(c *fiber.Ctx) error {
 		"message": "Profile image updated successfully",
 	})
 }
+
+func DeleteUser(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+	if result := database.DB.Where("id = ?", userID).Delete(&models.User{}); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to delete user",
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "User deleted successfully",
+	})
+}

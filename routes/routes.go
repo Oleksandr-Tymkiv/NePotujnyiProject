@@ -56,6 +56,8 @@ func SetupRoutes(app *fiber.App) {
 	// @Router /users/profile/image [put]
 	userRoutes.Put("/profile/image", middleware.AuthRequired(), handlers.UpdateProfileImage)
 
+	userRoutes.Delete("delete", middleware.AuthRequired(), handlers.DeleteUser)
+
 	// @Summary Get all dishes
 	// @Description Get a list of all available dishes
 	// @Tags dishes
@@ -87,7 +89,7 @@ func SetupRoutes(app *fiber.App) {
 	dishRoutes.Get("/search", handlers.SearchDishesByName)
 
 	ingredientRoutes := app.Group("/ingredients")
-	
+
 	// @Summary Add new ingredient
 	// @Description Add a new ingredient to the system
 	// @Tags ingredients
@@ -144,7 +146,7 @@ func SetupRoutes(app *fiber.App) {
 	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
 
 	cartRoutes := app.Group("/cart")
-	
+
 	// @Summary Add ingredients to cart
 	// @Description Add ingredients to user's shopping cart
 	// @Tags cart
