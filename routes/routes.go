@@ -56,7 +56,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Router /users/profile/image [put]
 	userRoutes.Put("/profile/image", middleware.AuthRequired(), handlers.UpdateProfileImage)
 
-	userRoutes.Delete("delete", middleware.AuthRequired(), handlers.DeleteUser)
+	userRoutes.Delete("/delete/:user_id", middleware.AuthRequired(), handlers.DeleteUser)
 
 	// @Summary Get all dishes
 	// @Description Get a list of all available dishes

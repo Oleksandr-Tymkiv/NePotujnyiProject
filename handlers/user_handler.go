@@ -5,6 +5,7 @@ import (
 	"foodapp/database"
 	"foodapp/models"
 	"foodapp/utils"
+	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -182,14 +183,22 @@ func UpdateProfileImage(c *fiber.Ctx) error {
 }
 
 func DeleteUser(c *fiber.Ctx) error {
-	userID := c.Locals("userID").(uint)
-	if result := database.DB.Where("id = ?", userID).Delete(&models.User{}); result.Error != nil {
+	userID := c.Params("user_id")
+
+	var result *gorm.DB
+	if result = database.DB.Where("id = ?", userID).Delete(&models.User{}); result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to delete user",
 		})
 	}
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "User deleted successfully",
 	})
 }
