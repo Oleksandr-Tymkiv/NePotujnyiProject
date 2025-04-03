@@ -7,11 +7,11 @@ type Dish struct {
 	Name              string    `json:"name"`
 	PreparationTime   int       `json:"preparation_time"`
 	Calories          int       `json:"calories"`
-	Fats              float64   `json:"fats"`
-	Carbs             float64   `json:"carbs"`
-	Proteins          float64   `json:"proteins"`
+	Fats              int       `json:"fats"`
+	Carbs             int       `json:"carbs"`
+	Proteins          int       `json:"proteins"`
 	Category          string    `json:"category"`
-	Image             string    `json:"image"`
+	Image             []byte    `gorm:"type:longblob" json:"image,omitempty"`
 	UserID            uint      `json:"user_id"`
 	CreatedAt         time.Time `json:"created_at"`
 	Instruction       string    `json:"instruction"`
