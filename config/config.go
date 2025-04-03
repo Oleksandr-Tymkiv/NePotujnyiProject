@@ -28,7 +28,7 @@ func LoadConfig() (*Config, error) {
 	}
 
 	config := &Config{
-		ServerPort: getEnv("SERVER_PORT", "8080"),
+		ServerPort: getEnv("SERVER_PORT", "8888"),
 		DBConfig: DatabaseConfig{
 			Host:     getEnv("DB_HOST", "localhost"),
 			Port:     getEnv("DB_PORT", "3306"),

@@ -17,7 +17,7 @@ import (
 // @title Food App API
 // @version 1.0
 // @description This is the API documentation for the Food App
-// @host localhost:8080
+// @host localhost:8888
 // @BasePath /
 // @schemes http https
 func main() {
@@ -49,5 +49,5 @@ func main() {
 	routes.SetupRoutes(app)
 
 	log.Printf("Server starting on port %s", cf.ServerPort)
-	log.Fatal(app.Listen(":" + cf.ServerPort))
+	log.Fatal(app.Listen("0.0.0.0:" + cf.ServerPort))
 }

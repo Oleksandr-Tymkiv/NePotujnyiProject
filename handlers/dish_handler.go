@@ -31,10 +31,9 @@ func GetAllDishes(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
-		dishesWithIngredients = append(dishesWithIngredients, dishWithIngredients)
 
 		var dishIngredients []models.DishIngredient
-		database.DB.Where("dish_id = ?", dish.ID).Find(&dishIngredients);
+		database.DB.Where("dish_id = ?", dish.ID).Find(&dishIngredients)
 
 		for _, di := range dishIngredients {
 			var ingredient models.Ingredient
@@ -46,13 +45,13 @@ func GetAllDishes(c *fiber.Ctx) error {
 			}
 
 			dishWithIngredients.Ingredients = append(dishWithIngredients.Ingredients, models.IngredientDetails{
-				ID: ingredient.ID,
-				Name: ingredient.Name,
-				Image: imageBase64,
+				ID:       ingredient.ID,
+				Name:     ingredient.Name,
+				Image:    imageBase64,
 				Quantity: di.Quantity,
 			})
 		}
-		
+
 		dishesWithIngredients = append(dishesWithIngredients, dishWithIngredients)
 	}
 
@@ -173,14 +172,3 @@ func SearchDishesByName(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(dishesWithIngredients)
 }
-
-
-
-
-
-
-
-
-
-
-
