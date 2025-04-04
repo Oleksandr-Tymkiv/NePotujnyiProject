@@ -32,22 +32,23 @@ func GetAllDishes(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
-		
+
 		if len(dish.Image) > 0 {
 			dishWithIngredients.Dish.Image = nil
 			dishResponse := convertDishToResponse(dish)
 			dishWithIngredients.Dish = models.Dish{
-				ID:                dishResponse.ID,
-				Name:              dishResponse.Name,
-				PreparationTime:   dishResponse.PreparationTime,
-				Calories:          dishResponse.Calories,
-				Fats:              dishResponse.Fats,
-				Carbs:             dishResponse.Carbs,
-				Proteins:          dishResponse.Proteins,
-				Category:          dishResponse.Category,
-				UserID:            dishResponse.UserID,
-				CreatedAt:         dishResponse.CreatedAt,
-				Instruction:       dishResponse.Instruction,
+				ID:              dishResponse.ID,
+				Name:            dishResponse.Name,
+				PreparationTime: dishResponse.PreparationTime,
+				Calories:        dishResponse.Calories,
+				Fats:            dishResponse.Fats,
+				Carbs:           dishResponse.Carbs,
+				Proteins:        dishResponse.Proteins,
+				Category:        dishResponse.Category,
+				UserID:          dishResponse.UserID,
+				CreatedAt:       dishResponse.CreatedAt,
+				Instruction:     dishResponse.Instruction,
+				Image:           dish.Image,
 			}
 		}
 
@@ -108,22 +109,23 @@ func GetDishesByCategory(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
-		
+
 		if len(dish.Image) > 0 {
 			dishWithIngredients.Dish.Image = nil
 			dishResponse := convertDishToResponse(dish)
 			dishWithIngredients.Dish = models.Dish{
-				ID:                dishResponse.ID,
-				Name:              dishResponse.Name,
-				PreparationTime:   dishResponse.PreparationTime,
-				Calories:          dishResponse.Calories,
-				Fats:              dishResponse.Fats,
-				Carbs:             dishResponse.Carbs,
-				Proteins:          dishResponse.Proteins,
-				Category:          dishResponse.Category,
-				UserID:            dishResponse.UserID,
-				CreatedAt:         dishResponse.CreatedAt,
-				Instruction:       dishResponse.Instruction,
+				ID:              dishResponse.ID,
+				Name:            dishResponse.Name,
+				PreparationTime: dishResponse.PreparationTime,
+				Calories:        dishResponse.Calories,
+				Fats:            dishResponse.Fats,
+				Carbs:           dishResponse.Carbs,
+				Proteins:        dishResponse.Proteins,
+				Category:        dishResponse.Category,
+				UserID:          dishResponse.UserID,
+				CreatedAt:       dishResponse.CreatedAt,
+				Instruction:     dishResponse.Instruction,
+				Image:           dish.Image,
 			}
 		}
 
@@ -183,22 +185,23 @@ func SearchDishesByName(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
-		
+
 		if len(dish.Image) > 0 {
 			dishWithIngredients.Dish.Image = nil
 			dishResponse := convertDishToResponse(dish)
 			dishWithIngredients.Dish = models.Dish{
-				ID:                dishResponse.ID,
-				Name:              dishResponse.Name,
-				PreparationTime:   dishResponse.PreparationTime,
-				Calories:          dishResponse.Calories,
-				Fats:              dishResponse.Fats,
-				Carbs:             dishResponse.Carbs,
-				Proteins:          dishResponse.Proteins,
-				Category:          dishResponse.Category,
-				UserID:            dishResponse.UserID,
-				CreatedAt:         dishResponse.CreatedAt,
-				Instruction:       dishResponse.Instruction,
+				ID:              dishResponse.ID,
+				Name:            dishResponse.Name,
+				PreparationTime: dishResponse.PreparationTime,
+				Calories:        dishResponse.Calories,
+				Fats:            dishResponse.Fats,
+				Carbs:           dishResponse.Carbs,
+				Proteins:        dishResponse.Proteins,
+				Category:        dishResponse.Category,
+				UserID:          dishResponse.UserID,
+				CreatedAt:       dishResponse.CreatedAt,
+				Instruction:     dishResponse.Instruction,
+				Image:           dish.Image,
 			}
 		}
 
@@ -230,17 +233,17 @@ func SearchDishesByName(c *fiber.Ctx) error {
 
 func convertDishToResponse(dish models.Dish) models.DishResponse {
 	response := models.DishResponse{
-		ID:                dish.ID,
-		Name:              dish.Name,
-		PreparationTime:   dish.PreparationTime,
-		Calories:          dish.Calories,
-		Fats:              dish.Fats,
-		Carbs:             dish.Carbs,
-		Proteins:          dish.Proteins,
-		Category:          dish.Category,
-		UserID:            dish.UserID,
-		CreatedAt:         dish.CreatedAt,
-		Instruction:       dish.Instruction,
+		ID:              dish.ID,
+		Name:            dish.Name,
+		PreparationTime: dish.PreparationTime,
+		Calories:        dish.Calories,
+		Fats:            dish.Fats,
+		Carbs:           dish.Carbs,
+		Proteins:        dish.Proteins,
+		Category:        dish.Category,
+		UserID:          dish.UserID,
+		CreatedAt:       dish.CreatedAt,
+		Instruction:     dish.Instruction,
 	}
 
 	if len(dish.Image) > 0 {
