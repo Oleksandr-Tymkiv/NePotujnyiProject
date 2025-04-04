@@ -68,6 +68,17 @@ func SetupRoutes(app *fiber.App) {
 	dishRoutes := app.Group("/dishes")
 	dishRoutes.Get("/", handlers.GetAllDishes)
 
+	// @Summary Create new dish
+	// @Description Create a new dish with ingredients
+	// @Tags dishes
+	// @Accept json
+	// @Produce json
+	// @Security ApiKeyAuth
+	// @Param dish body models.CreateDishRequest true "Dish details"
+	// @Success 201 {object} models.DishResponse
+	// @Router /dishes/create [post]
+	dishRoutes.Post("/create", middleware.AuthRequired(), handlers.CreateDish)
+
 	// @Summary Get dishes by category
 	// @Description Get dishes filtered by category
 	// @Tags dishes

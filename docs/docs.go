@@ -303,6 +303,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/dishes/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new dish with ingredients",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dishes"
+                ],
+                "summary": "Create new dish",
+                "parameters": [
+                    {
+                        "description": "Dish details",
+                        "name": "dish",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateDishRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.DishResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/dishes/search": {
             "get": {
                 "description": "Search for dishes by name",
@@ -870,6 +927,63 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreateDishRequest": {
+            "type": "object",
+            "required": [
+                "calories",
+                "carbs",
+                "category",
+                "fats",
+                "instruction",
+                "name",
+                "preparation_time",
+                "proteins"
+            ],
+            "properties": {
+                "calories": {
+                    "type": "integer"
+                },
+                "carbs": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "fats": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "ingredients": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DishIngredientRequest"
+                    }
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preparation_time": {
+                    "type": "integer"
+                },
+                "proteins": {
+                    "type": "integer"
+                },
+                "video_instructions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "models.Dish": {
             "type": "object",
             "properties": {
@@ -877,7 +991,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "carbs": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "category": {
                     "type": "string"
@@ -886,7 +1000,86 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "fats": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "preparation_time": {
+                    "type": "integer"
+                },
+                "proteins": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "video_instructions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "models.DishIngredientRequest": {
+            "type": "object",
+            "required": [
+                "ingredient_id",
+                "quantity"
+            ],
+            "properties": {
+                "ingredient_id": {
+                    "type": "integer"
+                },
+                "quantity": {
                     "type": "number"
+                }
+            }
+        },
+        "models.DishIngredientResponse": {
+            "type": "object",
+            "properties": {
+                "dish_id": {
+                    "type": "integer"
+                },
+                "ingredient": {
+                    "$ref": "#/definitions/models.IngredientResponse"
+                },
+                "quantity": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.DishResponse": {
+            "type": "object",
+            "properties": {
+                "calories": {
+                    "type": "integer"
+                },
+                "carbs": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "fats": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -904,30 +1097,13 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "proteins": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "user_id": {
                     "type": "integer"
                 },
                 "video_instructions": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                }
-            }
-        },
-        "models.DishIngredientResponse": {
-            "type": "object",
-            "properties": {
-                "dish_id": {
-                    "type": "integer"
-                },
-                "ingredient": {
-                    "$ref": "#/definitions/models.IngredientResponse"
-                },
-                "quantity": {
-                    "type": "number"
+                    "type": "string"
                 }
             }
         },

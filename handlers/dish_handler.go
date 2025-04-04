@@ -5,6 +5,7 @@ import (
 	"foodapp/database"
 	"foodapp/models"
 	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -30,6 +31,24 @@ func GetAllDishes(c *fiber.Ctx) error {
 	for _, dish := range dishes {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
+		}
+		
+		if len(dish.Image) > 0 {
+			dishWithIngredients.Dish.Image = nil
+			dishResponse := convertDishToResponse(dish)
+			dishWithIngredients.Dish = models.Dish{
+				ID:                dishResponse.ID,
+				Name:              dishResponse.Name,
+				PreparationTime:   dishResponse.PreparationTime,
+				Calories:          dishResponse.Calories,
+				Fats:              dishResponse.Fats,
+				Carbs:             dishResponse.Carbs,
+				Proteins:          dishResponse.Proteins,
+				Category:          dishResponse.Category,
+				UserID:            dishResponse.UserID,
+				CreatedAt:         dishResponse.CreatedAt,
+				Instruction:       dishResponse.Instruction,
+			}
 		}
 
 		var dishIngredients []models.DishIngredient
@@ -89,6 +108,24 @@ func GetDishesByCategory(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
+		
+		if len(dish.Image) > 0 {
+			dishWithIngredients.Dish.Image = nil
+			dishResponse := convertDishToResponse(dish)
+			dishWithIngredients.Dish = models.Dish{
+				ID:                dishResponse.ID,
+				Name:              dishResponse.Name,
+				PreparationTime:   dishResponse.PreparationTime,
+				Calories:          dishResponse.Calories,
+				Fats:              dishResponse.Fats,
+				Carbs:             dishResponse.Carbs,
+				Proteins:          dishResponse.Proteins,
+				Category:          dishResponse.Category,
+				UserID:            dishResponse.UserID,
+				CreatedAt:         dishResponse.CreatedAt,
+				Instruction:       dishResponse.Instruction,
+			}
+		}
 
 		var dishIngredients []models.DishIngredient
 		database.DB.Where("dish_id = ?", dish.ID).Find(&dishIngredients)
@@ -146,6 +183,24 @@ func SearchDishesByName(c *fiber.Ctx) error {
 		dishWithIngredients := models.DishWithIngredients{
 			Dish: dish,
 		}
+		
+		if len(dish.Image) > 0 {
+			dishWithIngredients.Dish.Image = nil
+			dishResponse := convertDishToResponse(dish)
+			dishWithIngredients.Dish = models.Dish{
+				ID:                dishResponse.ID,
+				Name:              dishResponse.Name,
+				PreparationTime:   dishResponse.PreparationTime,
+				Calories:          dishResponse.Calories,
+				Fats:              dishResponse.Fats,
+				Carbs:             dishResponse.Carbs,
+				Proteins:          dishResponse.Proteins,
+				Category:          dishResponse.Category,
+				UserID:            dishResponse.UserID,
+				CreatedAt:         dishResponse.CreatedAt,
+				Instruction:       dishResponse.Instruction,
+			}
+		}
 
 		var dishIngredients []models.DishIngredient
 		database.DB.Where("dish_id = ?", dish.ID).Find(&dishIngredients)
@@ -171,4 +226,99 @@ func SearchDishesByName(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(dishesWithIngredients)
+}
+
+func convertDishToResponse(dish models.Dish) models.DishResponse {
+	response := models.DishResponse{
+		ID:                dish.ID,
+		Name:              dish.Name,
+		PreparationTime:   dish.PreparationTime,
+		Calories:          dish.Calories,
+		Fats:              dish.Fats,
+		Carbs:             dish.Carbs,
+		Proteins:          dish.Proteins,
+		Category:          dish.Category,
+		UserID:            dish.UserID,
+		CreatedAt:         dish.CreatedAt,
+		Instruction:       dish.Instruction,
+	}
+
+	if len(dish.Image) > 0 {
+		response.Image = base64.StdEncoding.EncodeToString(dish.Image)
+	}
+
+	if len(dish.VideoInstructions) > 0 {
+		response.VideoInstructions = base64.StdEncoding.EncodeToString(dish.VideoInstructions)
+	}
+
+	return response
+}
+
+// @Summary Create new dish
+// @Description Create a new dish with ingredients
+// @Tags dishes
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param dish body models.CreateDishRequest true "Dish details"
+// @Success 201 {object} models.DishResponse
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /dishes/create [post]
+func CreateDish(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+
+	var req models.CreateDishRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	dish := models.Dish{
+		Name:              req.Name,
+		PreparationTime:   req.PreparationTime,
+		Calories:          req.Calories,
+		Fats:              req.Fats,
+		Carbs:             req.Carbs,
+		Proteins:          req.Proteins,
+		Category:          req.Category,
+		Image:             req.Image,
+		UserID:            userID,
+		CreatedAt:         time.Now(),
+		Instruction:       req.Instruction,
+		VideoInstructions: req.VideoInstructions,
+	}
+
+	tx := database.DB.Begin()
+	if err := tx.Create(&dish).Error; err != nil {
+		tx.Rollback()
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to create dish",
+		})
+	}
+
+	for _, ingredient := range req.Ingredients {
+		dishIngredient := models.DishIngredient{
+			DishID:       dish.ID,
+			IngredientID: ingredient.IngredientID,
+			Quantity:     ingredient.Quantity,
+		}
+
+		if err := tx.Create(&dishIngredient).Error; err != nil {
+			tx.Rollback()
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to add dish ingredients",
+			})
+		}
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Transaction failed",
+		})
+	}
+
+	dishResponse := convertDishToResponse(dish)
+	return c.Status(fiber.StatusCreated).JSON(dishResponse)
 }

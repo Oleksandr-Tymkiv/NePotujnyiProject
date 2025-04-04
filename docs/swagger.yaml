@@ -30,18 +30,110 @@ definitions:
       user_id:
         type: integer
     type: object
+  models.CreateDishRequest:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: integer
+      category:
+        type: string
+      fats:
+        type: integer
+      image:
+        items:
+          type: integer
+        type: array
+      ingredients:
+        items:
+          $ref: '#/definitions/models.DishIngredientRequest'
+        type: array
+      instruction:
+        type: string
+      name:
+        type: string
+      preparation_time:
+        type: integer
+      proteins:
+        type: integer
+      video_instructions:
+        items:
+          type: integer
+        type: array
+    required:
+    - calories
+    - carbs
+    - category
+    - fats
+    - instruction
+    - name
+    - preparation_time
+    - proteins
+    type: object
   models.Dish:
     properties:
       calories:
         type: integer
       carbs:
-        type: number
+        type: integer
       category:
         type: string
       created_at:
         type: string
       fats:
+        type: integer
+      id:
+        type: integer
+      image:
+        items:
+          type: integer
+        type: array
+      instruction:
+        type: string
+      name:
+        type: string
+      preparation_time:
+        type: integer
+      proteins:
+        type: integer
+      user_id:
+        type: integer
+      video_instructions:
+        items:
+          type: integer
+        type: array
+    type: object
+  models.DishIngredientRequest:
+    properties:
+      ingredient_id:
+        type: integer
+      quantity:
         type: number
+    required:
+    - ingredient_id
+    - quantity
+    type: object
+  models.DishIngredientResponse:
+    properties:
+      dish_id:
+        type: integer
+      ingredient:
+        $ref: '#/definitions/models.IngredientResponse'
+      quantity:
+        type: number
+    type: object
+  models.DishResponse:
+    properties:
+      calories:
+        type: integer
+      carbs:
+        type: integer
+      category:
+        type: string
+      created_at:
+        type: string
+      fats:
+        type: integer
       id:
         type: integer
       image:
@@ -53,22 +145,11 @@ definitions:
       preparation_time:
         type: integer
       proteins:
-        type: number
+        type: integer
       user_id:
         type: integer
       video_instructions:
-        items:
-          type: integer
-        type: array
-    type: object
-  models.DishIngredientResponse:
-    properties:
-      dish_id:
-        type: integer
-      ingredient:
-        $ref: '#/definitions/models.IngredientResponse'
-      quantity:
-        type: number
+        type: string
     type: object
   models.DishWithIngredients:
     properties:
@@ -366,6 +447,42 @@ paths:
               type: string
             type: object
       summary: Get dishes by category
+      tags:
+      - dishes
+  /dishes/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new dish with ingredients
+      parameters:
+      - description: Dish details
+        in: body
+        name: dish
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateDishRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.DishResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Create new dish
       tags:
       - dishes
   /dishes/search:

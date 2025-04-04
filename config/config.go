@@ -34,7 +34,7 @@ func LoadConfig() (*Config, error) {
 			Port:     getEnv("DB_PORT", "3306"),
 			User:     getEnv("DB_USER", "root"),
 			Password: getEnv("DB_PASSWORD", ""),
-			DBName:   getEnv("DB_NAME", "foodapp"),
+			DBName:   getEnv("DB_NAME", "foodapp1"),
 		},
 		JWTSecret: getEnv("JWT_SECRET", "your-super-secret-key"),
 	}

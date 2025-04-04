@@ -13,7 +13,7 @@ var DB *gorm.DB
 
 func Connect(config config.DatabaseConfig) error {
 	var err error
-	DB, err = gorm.Open(sqlite.Open("foodapp.db"), &gorm.Config{})
+	DB, err = gorm.Open(sqlite.Open("foodapp1.db"), &gorm.Config{})
 	if err != nil {
 		return err
 	}

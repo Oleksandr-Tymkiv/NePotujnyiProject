@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="foodapp" uuid="570e33df-42a8-4f1c-baf1-23351cc3704c">
+    <data-source source="LOCAL" name="foodapp1" uuid="db3e8954-7443-43d2-a0ae-f73cb68bcbeb">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:D:\NePotujnyiProject1\foodapp.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:M:\Projects\NePotujnyiProject\foodapp.db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
       </jdbc-additional-properties>
@@ -55,11 +55,11 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="foodapp [2]" uuid="63d46d64-9e8e-417a-b516-83b8c2f67f40">
+    <data-source source="LOCAL" name="foodapp1 [2]" uuid="f0f1bca8-d914-4836-a2ed-1d30931074d7">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:M:\Projects\NePotujnyiProject\foodapp.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:M:\Projects\NePotujnyiProject\foodapp1.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>
