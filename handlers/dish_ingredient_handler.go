@@ -66,3 +66,41 @@ func GetDishIngredients(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(response)
 }
+
+func AddIngredientToDishes(c *fiber.Ctx) error {
+	var req models.DishIngredientsRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	var dish models.Dish
+	if result := database.DB.First(&dish, req.DishID); result.Error != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Dish not found",
+		})
+	}
+	var ingredient models.Ingredient
+	if result := database.DB.First(&ingredient, req.IngredientID); result.Error != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Ingredient not found",
+		})
+	}
+	dishIngredient := models.DishIngredient{
+		DishID:       req.DishID,
+		IngredientID: req.IngredientID,
+		Quantity:     req.Quantity,
+	}
+
+	if result := database.DB.Create(&dishIngredient); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to add shoto tam",
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Ingredient added to dishes successfully",
+		"id":      dishIngredient.ID,
+	})
+}

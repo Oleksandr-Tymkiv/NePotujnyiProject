@@ -156,6 +156,8 @@ func SetupRoutes(app *fiber.App) {
 	// @Router /dishes-ingredients/{dish_id} [get]
 	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
 
+	dishIngredientsRoutes.Post("/add", middleware.AuthRequired(), handlers.AddIngredientToDishes)
+
 	cartRoutes := app.Group("/cart")
 
 	// @Summary Add ingredients to cart
