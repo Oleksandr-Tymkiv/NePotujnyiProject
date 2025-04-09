@@ -77,7 +77,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Param dish body models.CreateDishRequest true "Dish details"
 	// @Success 201 {object} models.DishResponse
 	// @Router /dishes/create [post]
-	dishRoutes.Post("/create", middleware.AuthRequired(), handlers.CreateDish)
+	dishRoutes.Post("/create", handlers.CreateDish)
 
 	// @Summary Get dishes by category
 	// @Description Get dishes filtered by category
@@ -98,6 +98,8 @@ func SetupRoutes(app *fiber.App) {
 	// @Success 200 {array} models.Dish
 	// @Router /dishes/search [get]
 	dishRoutes.Get("/search", handlers.SearchDishesByName)
+
+	dishRoutes.Put("/update-picture", handlers.UpdatePictureDishes)
 
 	ingredientRoutes := app.Group("/ingredients")
 
@@ -122,7 +124,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Success 200 {object} models.FavoriteDish
 	// @Router /favorites-dishes/add [post]
 	favoritesRoutes := app.Group("/favorites-dishes")
-	favoritesRoutes.Post("/add", middleware.AuthRequired(), handlers.AddFavoriteDish)
+	favoritesRoutes.Post("/add", handlers.AddFavoriteDish)
 
 	// @Summary Delete favorite dish
 	// @Description Remove a dish from user's favorites
@@ -133,7 +135,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Param dish_id body integer true "Dish ID"
 	// @Success 200 {object} models.FavoriteDish
 	// @Router /favorites-dishes/delete [delete]
-	favoritesRoutes.Delete("/delete", middleware.AuthRequired(), handlers.DeleteFavoriteDish)
+	favoritesRoutes.Delete("/delete", handlers.DeleteFavoriteDish)
 
 	// @Summary Get user's favorite dishes
 	// @Description Get all favorite dishes for the current user
@@ -155,8 +157,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Success 200 {array} models.Ingredient
 	// @Router /dishes-ingredients/{dish_id} [get]
 	dishIngredientsRoutes.Get("/:dish_id", handlers.GetDishIngredients)
-
-	dishIngredientsRoutes.Post("/add", middleware.AuthRequired(), handlers.AddIngredientToDishes)
+	dishIngredientsRoutes.Post("/add", handlers.AddIngredientToDishes)
 
 	cartRoutes := app.Group("/cart")
 

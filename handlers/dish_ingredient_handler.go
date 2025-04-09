@@ -66,7 +66,6 @@ func GetDishIngredients(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(response)
 }
-
 func AddIngredientToDishes(c *fiber.Ctx) error {
 	var req models.DishIngredientsRequest
 	if err := c.BodyParser(&req); err != nil {

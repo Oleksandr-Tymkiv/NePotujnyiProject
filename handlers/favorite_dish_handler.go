@@ -136,9 +136,9 @@ func GetUserFavoriteDishes(c *fiber.Ctx) error {
 			}
 
 			dishWithIngredients.Ingredients = append(dishWithIngredients.Ingredients, models.IngredientDetails{
-				ID:    ingredient.ID,
-				Name:  ingredient.Name,
-				Image: imageBase64,
+				ID:       ingredient.ID,
+				Name:     ingredient.Name,
+				Image:    imageBase64,
 				Quantity: di.Quantity,
 			})
 		}

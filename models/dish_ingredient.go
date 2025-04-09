@@ -12,7 +12,6 @@ type DishIngredientResponse struct {
 	Ingredient IngredientResponse `json:"ingredient"`
 	Quantity   float64            `json:"quantity"`
 }
-
 type DishIngredientsRequest struct {
 	DishID       uint    `json:"dish_id"`
 	IngredientID uint    `json:"ingredient_id"`

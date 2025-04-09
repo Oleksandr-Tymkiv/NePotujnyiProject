@@ -34,8 +34,9 @@ func GetAllDishes(c *fiber.Ctx) error {
 		}
 
 		if len(dish.Image) > 0 {
-			dishWithIngredients.Dish.Image = nil
 			dishResponse := convertDishToResponse(dish)
+
+			imageBytes, _ := base64.StdEncoding.DecodeString(dishResponse.Image)
 			dishWithIngredients.Dish = models.Dish{
 				ID:              dishResponse.ID,
 				Name:            dishResponse.Name,
@@ -45,10 +46,9 @@ func GetAllDishes(c *fiber.Ctx) error {
 				Carbs:           dishResponse.Carbs,
 				Proteins:        dishResponse.Proteins,
 				Category:        dishResponse.Category,
-				UserID:          dishResponse.UserID,
+				Image:           imageBytes,
 				CreatedAt:       dishResponse.CreatedAt,
 				Instruction:     dishResponse.Instruction,
-				Image:           dish.Image,
 			}
 		}
 
@@ -122,10 +122,8 @@ func GetDishesByCategory(c *fiber.Ctx) error {
 				Carbs:           dishResponse.Carbs,
 				Proteins:        dishResponse.Proteins,
 				Category:        dishResponse.Category,
-				UserID:          dishResponse.UserID,
 				CreatedAt:       dishResponse.CreatedAt,
 				Instruction:     dishResponse.Instruction,
-				Image:           dish.Image,
 			}
 		}
 
@@ -198,10 +196,8 @@ func SearchDishesByName(c *fiber.Ctx) error {
 				Carbs:           dishResponse.Carbs,
 				Proteins:        dishResponse.Proteins,
 				Category:        dishResponse.Category,
-				UserID:          dishResponse.UserID,
 				CreatedAt:       dishResponse.CreatedAt,
 				Instruction:     dishResponse.Instruction,
-				Image:           dish.Image,
 			}
 		}
 
@@ -241,7 +237,6 @@ func convertDishToResponse(dish models.Dish) models.DishResponse {
 		Carbs:           dish.Carbs,
 		Proteins:        dish.Proteins,
 		Category:        dish.Category,
-		UserID:          dish.UserID,
 		CreatedAt:       dish.CreatedAt,
 		Instruction:     dish.Instruction,
 	}
@@ -269,7 +264,6 @@ func convertDishToResponse(dish models.Dish) models.DishResponse {
 // @Failure 500 {object} map[string]string
 // @Router /dishes/create [post]
 func CreateDish(c *fiber.Ctx) error {
-	userID := c.Locals("userID").(uint)
 
 	var req models.CreateDishRequest
 	if err := c.BodyParser(&req); err != nil {
@@ -287,7 +281,6 @@ func CreateDish(c *fiber.Ctx) error {
 		Proteins:          req.Proteins,
 		Category:          req.Category,
 		Image:             req.Image,
-		UserID:            userID,
 		CreatedAt:         time.Now(),
 		Instruction:       req.Instruction,
 		VideoInstructions: req.VideoInstructions,
@@ -324,4 +317,23 @@ func CreateDish(c *fiber.Ctx) error {
 
 	dishResponse := convertDishToResponse(dish)
 	return c.Status(fiber.StatusCreated).JSON(dishResponse)
+}
+
+func UpdatePictureDishes(c *fiber.Ctx) error {
+	var req models.UpdatePictureRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	if result := database.DB.Model(&models.Dish{}).Where("id = ?", req.ID).Update("image", req.Image); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update image of dish",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Profile image updated successfully",
+	})
 }
