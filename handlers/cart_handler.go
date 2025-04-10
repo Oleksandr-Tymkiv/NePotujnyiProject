@@ -143,7 +143,7 @@ func RemoveIngredientsCart(c *fiber.Ctx) error {
 	req.UserID = userID
 
 	var result *gorm.DB
-	if result = database.DB.Where("id = ?", req.ID).Delete(&models.Cart{}); result.Error != nil {
+	if result = database.DB.Where("user_id = ?", req.UserID).Where("ingredient_id = ?", req.IngredientID).Delete(&models.Cart{}); result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to delete ingredients from cart",
 		})
