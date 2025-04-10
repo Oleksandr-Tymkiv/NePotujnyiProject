@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"foodapp/database"
 	"foodapp/models"
+	"gorm.io/gorm"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -32,12 +33,10 @@ func AddIngredientsToCart(c *fiber.Ctx) error {
 	userID := c.Locals("userID").(uint)
 	req.UserID = userID
 
-	// Check if ingredient already in cart
 	var existingCartItem models.Cart
 	result := database.DB.Where("user_id = ? AND ingredient_id = ?", userID, req.IngredientID).First(&existingCartItem)
 
 	if result.RowsAffected > 0 {
-		// Update existing quantity
 		existingCartItem.Quantity += req.Quantity
 		if result := database.DB.Save(&existingCartItem); result.Error != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -131,4 +130,32 @@ func GetUserCart(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(response)
+}
+
+func RemoveIngredientsCart(c *fiber.Ctx) error {
+	var req models.CartRemoveIngredientRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+	userID := c.Locals("userID").(uint)
+	req.UserID = userID
+
+	var result *gorm.DB
+	if result = database.DB.Where("id = ?", req.ID).Delete(&models.Cart{}); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to delete ingredients from cart",
+		})
+	}
+
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Not found",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Deleted successfully",
+	})
 }

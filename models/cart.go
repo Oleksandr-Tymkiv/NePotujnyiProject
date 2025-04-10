@@ -23,3 +23,9 @@ type CartResponse struct {
 	} `json:"ingredient"`
 	Quantity uint `json:"quantity"`
 }
+
+type CartRemoveIngredientRequest struct {
+	ID           uint `json:"id" validate:"required"`
+	UserID       uint `json:"user_id" validate:"required"`
+	IngredientID uint `json:"ingredient_id" validate:"required"`
+}

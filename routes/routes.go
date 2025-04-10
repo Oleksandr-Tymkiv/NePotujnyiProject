@@ -181,4 +181,7 @@ func SetupRoutes(app *fiber.App) {
 	// @Success 200 {object} models.Cart
 	// @Router /cart/get [get]
 	cartRoutes.Get("/get", middleware.AuthRequired(), handlers.GetUserCart)
+
+	cartRoutes.Post("/remove-ingredients", middleware.AuthRequired(), handlers.RemoveIngredientsCart)
+
 }
