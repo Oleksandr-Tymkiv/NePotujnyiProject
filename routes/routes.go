@@ -184,4 +184,13 @@ func SetupRoutes(app *fiber.App) {
 
 	cartRoutes.Post("/remove-ingredients", middleware.AuthRequired(), handlers.RemoveIngredientsCart)
 
+	cartRoutes.Delete("/remove-all-ingredients", middleware.AuthRequired(), handlers.RemoveAllIngredientsCart)
+
+	cartRoutes.Put("update-quantity", middleware.AuthRequired(), handlers.UpdateQuantityCart)
+
+	statRoutes := app.Group("/statistics")
+
+	statRoutes.Get("/get/:user_id", middleware.AuthRequired(), handlers.GetStatistics)
+	statRoutes.Post("/add", middleware.AuthRequired(), handlers.AddStatistics)
+	statRoutes.Delete("/remove", middleware.AuthRequired(), handlers.RemoveStatistics)
 }

@@ -43,6 +43,7 @@ func MigrateDB() {
 		&models.DishIngredient{},
 		&models.FavoriteDish{},
 		&models.Cart{},
+		&models.Statistics{},
 	); err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}

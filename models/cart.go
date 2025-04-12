@@ -4,13 +4,13 @@ type Cart struct {
 	ID           uint `gorm:"primaryKey" json:"id"`
 	UserID       uint `json:"user_id" gorm:"constraint:OnDelete:CASCADE;"`
 	IngredientID uint `json:"ingredient_id" gorm:"constraint:OnDelete:CASCADE;"`
-	Quantity     uint `json:"quantity"`
+	Quantity     int  `json:"quantity"`
 }
 
 type CartRequest struct {
 	UserID       uint `json:"user_id"`
 	IngredientID uint `json:"ingredient_id" validate:"required"`
-	Quantity     uint `json:"quantity" validate:"required,gt=0"`
+	Quantity     int  `json:"quantity" validate:"required,gt=0"`
 }
 
 type CartResponse struct {
@@ -21,10 +21,16 @@ type CartResponse struct {
 		Name  string `json:"name"`
 		Image string `json:"image,omitempty"`
 	} `json:"ingredient"`
-	Quantity uint `json:"quantity"`
+	Quantity int `json:"quantity"`
 }
 
 type CartRemoveIngredientRequest struct {
 	UserID       uint `json:"user_id" validate:"required"`
 	IngredientID uint `json:"ingredient_id" validate:"required"`
+}
+
+type CartUpdateQuantityRequest struct {
+	UserID       uint `json:"user_id" validate:"required"`
+	IngredientID uint `json:"ingredient_id" validate:"required"`
+	Quantity     int  `json:"quantity" validate:"required"`
 }

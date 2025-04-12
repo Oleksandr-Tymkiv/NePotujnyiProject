@@ -159,3 +159,86 @@ func RemoveIngredientsCart(c *fiber.Ctx) error {
 		"message": "Deleted successfully",
 	})
 }
+
+func RemoveAllIngredientsCart(c *fiber.Ctx) error {
+	userID := c.Locals("userID").(uint)
+
+	var result *gorm.DB
+	if result = database.DB.Where("user_id = ?", userID).Delete(&models.Cart{}); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to delete ingredients from cart",
+		})
+	}
+
+	if result.RowsAffected == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Not found",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Deleted successfully",
+	})
+}
+
+func UpdateQuantityCart(c *fiber.Ctx) error {
+	var req models.CartUpdateQuantityRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	var existingCartItem models.Cart
+	result := database.DB.Where("user_id = ? AND ingredient_id = ?", req.UserID, req.IngredientID).First(&existingCartItem)
+
+	if result.RowsAffected > 0 {
+		newQuantity := existingCartItem.Quantity + req.Quantity
+
+		if newQuantity <= 0 {
+			if delErr := database.DB.Delete(&existingCartItem).Error; delErr != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"error": "Failed to remove item from cart",
+				})
+			}
+			return c.Status(fiber.StatusOK).JSON(fiber.Map{
+				"message": "Ingredient removed from cart",
+			})
+		}
+
+		existingCartItem.Quantity = newQuantity
+		if result := database.DB.Save(&existingCartItem); result.Error != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to update cart",
+			})
+		}
+
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"message": "Cart updated successfully",
+			"id":      existingCartItem.ID,
+		})
+	}
+
+	if req.Quantity <= 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Cannot add item with zero or negative quantity",
+		})
+	}
+
+	cartItem := models.Cart{
+		UserID:       req.UserID,
+		IngredientID: req.IngredientID,
+		Quantity:     req.Quantity,
+	}
+
+	if result := database.DB.Create(&cartItem); result.Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to add to cart",
+		})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Ingredient added to cart successfully",
+		"id":      cartItem.ID,
+	})
+}
