@@ -112,7 +112,7 @@ func AddStatistics(c *fiber.Ctx) error {
 }
 
 func RemoveStatistics(c *fiber.Ctx) error {
-	var req models.StatisticsRequest
+	var req models.StatisticsRemoveRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request body",
@@ -120,7 +120,7 @@ func RemoveStatistics(c *fiber.Ctx) error {
 	}
 
 	var stats []models.Statistics
-	if result := database.DB.Where("user_id = ?", req.UserID).Where("dish_id = ?", req.DishID).Delete(stats); result.Error != nil {
+	if result := database.DB.Where("id = ?", req.ID).Where("user_id = ?", req.UserID).Delete(stats); result.Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to delete ingredients from cart",
 		})

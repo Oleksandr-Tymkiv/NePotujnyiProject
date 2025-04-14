@@ -14,6 +14,11 @@ type StatisticsRequest struct {
 	DishID uint `json:"dish_id"`
 }
 
+type StatisticsRemoveRequest struct {
+	ID     uint `gorm:"primaryKey" json:"id"`
+	UserID uint `json:"user_id"`
+}
+
 type StatisticsResponse struct {
 	ID                  uint                `gorm:"primaryKey" json:"id"`
 	UserID              uint                `json:"user_id"`
